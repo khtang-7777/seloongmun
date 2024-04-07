@@ -3,53 +3,20 @@
   "name": "shooting",
   "instructions": [
     {
-      "name": "close",
-      "accounts": [
-        {
-          "name": "payer",
-          "isMut": true,
-          "isSigner": true
-        },
-        {
-          "name": "shooting",
-          "isMut": true,
-          "isSigner": false
-        }
-      ],
-      "args": []
-    },
-    {
-      "name": "decrement",
-      "accounts": [
-        {
-          "name": "shooting",
-          "isMut": true,
-          "isSigner": false
-        }
-      ],
-      "args": []
-    },
-    {
-      "name": "increment",
-      "accounts": [
-        {
-          "name": "shooting",
-          "isMut": true,
-          "isSigner": false
-        }
-      ],
-      "args": []
-    },
-    {
       "name": "initialize",
       "accounts": [
         {
-          "name": "payer",
+          "name": "safeVault",
           "isMut": true,
-          "isSigner": true
+          "isSigner": false
         },
         {
           "name": "shooting",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "signer",
           "isMut": true,
           "isSigner": true
         },
@@ -62,18 +29,33 @@
       "args": []
     },
     {
-      "name": "set",
+      "name": "draw",
       "accounts": [
+        {
+          "name": "player",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "safeVault",
+          "isMut": true,
+          "isSigner": false
+        },
         {
           "name": "shooting",
           "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
           "isSigner": false
         }
       ],
       "args": [
         {
-          "name": "value",
-          "type": "u8"
+          "name": "amount",
+          "type": "u64"
         }
       ]
     }
@@ -85,11 +67,51 @@
         "kind": "struct",
         "fields": [
           {
-            "name": "count",
+            "name": "lastCard",
             "type": "u8"
+          },
+          {
+            "name": "leftPole",
+            "type": "u8"
+          },
+          {
+            "name": "rightPole",
+            "type": "u8"
+          },
+          {
+            "name": "deck",
+            "type": "u64"
           }
         ]
       }
+    },
+    {
+      "name": "SafeVault",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "reserveRate",
+            "type": "u8"
+          },
+          {
+            "name": "poolAmount",
+            "type": "u64"
+          }
+        ]
+      }
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "NotEnoughBet",
+      "msg": "Your wallet should have at least double than your bet"
+    },
+    {
+      "code": 6001,
+      "name": "NotEnoughFund",
+      "msg": "You betting more than our pool"
     }
   ],
   "metadata": {

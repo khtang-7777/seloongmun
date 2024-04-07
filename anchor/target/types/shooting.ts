@@ -1,191 +1,235 @@
 export type Shooting = {
-  version: '0.1.0';
-  name: 'shooting';
-  instructions: [
+  "version": "0.1.0",
+  "name": "shooting",
+  "instructions": [
     {
-      name: 'close';
-      accounts: [
+      "name": "initialize",
+      "accounts": [
         {
-          name: 'payer';
-          isMut: true;
-          isSigner: true;
+          "name": "safeVault",
+          "isMut": true,
+          "isSigner": false
         },
         {
-          name: 'shooting';
-          isMut: true;
-          isSigner: false;
-        }
-      ];
-      args: [];
-    },
-    {
-      name: 'decrement';
-      accounts: [
-        {
-          name: 'shooting';
-          isMut: true;
-          isSigner: false;
-        }
-      ];
-      args: [];
-    },
-    {
-      name: 'increment';
-      accounts: [
-        {
-          name: 'shooting';
-          isMut: true;
-          isSigner: false;
-        }
-      ];
-      args: [];
-    },
-    {
-      name: 'initialize';
-      accounts: [
-        {
-          name: 'payer';
-          isMut: true;
-          isSigner: true;
+          "name": "shooting",
+          "isMut": true,
+          "isSigner": false
         },
         {
-          name: 'shooting';
-          isMut: true;
-          isSigner: true;
+          "name": "signer",
+          "isMut": true,
+          "isSigner": true
         },
         {
-          name: 'systemProgram';
-          isMut: false;
-          isSigner: false;
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
         }
-      ];
-      args: [];
+      ],
+      "args": []
     },
     {
-      name: 'set';
-      accounts: [
+      "name": "draw",
+      "accounts": [
         {
-          name: 'shooting';
-          isMut: true;
-          isSigner: false;
-        }
-      ];
-      args: [
+          "name": "player",
+          "isMut": true,
+          "isSigner": true
+        },
         {
-          name: 'value';
-          type: 'u8';
+          "name": "safeVault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "shooting",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
         }
-      ];
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
     }
-  ];
-  accounts: [
+  ],
+  "accounts": [
     {
-      name: 'shooting';
-      type: {
-        kind: 'struct';
-        fields: [
+      "name": "shooting",
+      "type": {
+        "kind": "struct",
+        "fields": [
           {
-            name: 'count';
-            type: 'u8';
+            "name": "lastCard",
+            "type": "u8"
+          },
+          {
+            "name": "leftPole",
+            "type": "u8"
+          },
+          {
+            "name": "rightPole",
+            "type": "u8"
+          },
+          {
+            "name": "deck",
+            "type": "u64"
           }
-        ];
-      };
+        ]
+      }
+    },
+    {
+      "name": "safeVault",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "reserveRate",
+            "type": "u8"
+          },
+          {
+            "name": "poolAmount",
+            "type": "u64"
+          }
+        ]
+      }
     }
-  ];
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "NotEnoughBet",
+      "msg": "Your wallet should have at least double than your bet"
+    },
+    {
+      "code": 6001,
+      "name": "NotEnoughFund",
+      "msg": "You betting more than our pool"
+    }
+  ]
 };
 
 export const IDL: Shooting = {
-  version: '0.1.0',
-  name: 'shooting',
-  instructions: [
+  "version": "0.1.0",
+  "name": "shooting",
+  "instructions": [
     {
-      name: 'close',
-      accounts: [
+      "name": "initialize",
+      "accounts": [
         {
-          name: 'payer',
-          isMut: true,
-          isSigner: true,
+          "name": "safeVault",
+          "isMut": true,
+          "isSigner": false
         },
         {
-          name: 'shooting',
-          isMut: true,
-          isSigner: false,
+          "name": "shooting",
+          "isMut": true,
+          "isSigner": false
         },
+        {
+          "name": "signer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
       ],
-      args: [],
+      "args": []
     },
     {
-      name: 'decrement',
-      accounts: [
+      "name": "draw",
+      "accounts": [
         {
-          name: 'shooting',
-          isMut: true,
-          isSigner: false,
+          "name": "player",
+          "isMut": true,
+          "isSigner": true
         },
+        {
+          "name": "safeVault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "shooting",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
       ],
-      args: [],
-    },
-    {
-      name: 'increment',
-      accounts: [
+      "args": [
         {
-          name: 'shooting',
-          isMut: true,
-          isSigner: false,
-        },
-      ],
-      args: [],
-    },
-    {
-      name: 'initialize',
-      accounts: [
-        {
-          name: 'payer',
-          isMut: true,
-          isSigner: true,
-        },
-        {
-          name: 'shooting',
-          isMut: true,
-          isSigner: true,
-        },
-        {
-          name: 'systemProgram',
-          isMut: false,
-          isSigner: false,
-        },
-      ],
-      args: [],
-    },
-    {
-      name: 'set',
-      accounts: [
-        {
-          name: 'shooting',
-          isMut: true,
-          isSigner: false,
-        },
-      ],
-      args: [
-        {
-          name: 'value',
-          type: 'u8',
-        },
-      ],
-    },
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    }
   ],
-  accounts: [
+  "accounts": [
     {
-      name: 'shooting',
-      type: {
-        kind: 'struct',
-        fields: [
+      "name": "shooting",
+      "type": {
+        "kind": "struct",
+        "fields": [
           {
-            name: 'count',
-            type: 'u8',
+            "name": "lastCard",
+            "type": "u8"
           },
-        ],
-      },
+          {
+            "name": "leftPole",
+            "type": "u8"
+          },
+          {
+            "name": "rightPole",
+            "type": "u8"
+          },
+          {
+            "name": "deck",
+            "type": "u64"
+          }
+        ]
+      }
     },
+    {
+      "name": "safeVault",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "reserveRate",
+            "type": "u8"
+          },
+          {
+            "name": "poolAmount",
+            "type": "u64"
+          }
+        ]
+      }
+    }
   ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "NotEnoughBet",
+      "msg": "Your wallet should have at least double than your bet"
+    },
+    {
+      "code": 6001,
+      "name": "NotEnoughFund",
+      "msg": "You betting more than our pool"
+    }
+  ]
 };

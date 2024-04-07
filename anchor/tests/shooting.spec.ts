@@ -2,6 +2,7 @@ import * as anchor from '@coral-xyz/anchor';
 import { Program } from '@coral-xyz/anchor';
 import { Keypair } from '@solana/web3.js';
 import { Shooting } from '../target/types/shooting';
+const { SystemProgram } = anchor.web3;
 
 describe('shooting', () => {
   // Configure the client to use the local cluster.
@@ -12,89 +13,199 @@ describe('shooting', () => {
   const program = anchor.workspace.Shooting as Program<Shooting>;
 
   const shootingKeypair = Keypair.generate();
+  console.log(`shootingKeypair Account: ${shootingKeypair.publicKey}`);
 
-  it('Initialize Shooting', async () => {
+  const [shootingPDA] = anchor.web3.PublicKey.findProgramAddressSync(
+    [Buffer.from('shooting')],
+    program.programId
+  );
+  console.log(`shootingPDA Account: ${shootingPDA}`);
+  const [safeVaultPDA] = anchor.web3.PublicKey.findProgramAddressSync(
+    [Buffer.from('safevault')],
+    program.programId
+  );
+  console.log(`safeVaultPDA Account: ${safeVaultPDA}`);
+  console.log('Account Balance before Draw: \n');
+
+  it('init', async () => {
     await program.methods
       .initialize()
       .accounts({
-        shooting: shootingKeypair.publicKey,
-        payer: payer.publicKey,
+        signer: payer.publicKey,
+        shooting: shootingPDA,
+        safeVault: safeVaultPDA,
+        systemProgram: SystemProgram.programId,
       })
-      .signers([shootingKeypair])
       .rpc();
-
-    const currentCount = await program.account.shooting.fetch(
-      shootingKeypair.publicKey
+    const shootingData = await program.account.shooting.fetch(shootingPDA);
+    console.log('Last Card Draw: ', shootingData.lastCard + '\n');
+    console.log(
+      'shootingPDA R Pole: ',
+      getCard(shootingData.leftPole) + '(' + shootingData.leftPole + ')\n'
     );
-
-    expect(currentCount.count).toEqual(0);
+    console.log(
+      'shootingPDA L Pole: ',
+      getCard(shootingData.rightPole) + '(' + shootingData.rightPole + ')\n'
+    );
+    console.log(
+      'shootingPDA deck: ',
+      shootingData.deck + '(' + shootingData.deck.toString(2) + ')\n'
+    );
   });
 
-  it('Increment Shooting', async () => {
-    await program.methods
-      .increment()
-      .accounts({ shooting: shootingKeypair.publicKey })
-      .rpc();
-
-    const currentCount = await program.account.shooting.fetch(
-      shootingKeypair.publicKey
+  it('draw', async () => {
+    let balanceVault = await provider.connection.getBalance(safeVaultPDA);
+    let balancePlayer = await provider.connection.getBalance(payer.publicKey);
+    let safeVaultData = await program.account.safeVault.fetch(safeVaultPDA);
+    console.log(
+      'Account Balance\tsafevault: ' +
+        balanceVault +
+        '(poll:'+safeVaultData.poolAmount+')\tplayer' +
+        balancePlayer +
+        '\n'
     );
-
-    expect(currentCount.count).toEqual(1);
+    let shootingData;
+    for (let i = 0; i < 10; i++) {
+      shootingData = await program.account.shooting.fetch(shootingPDA);
+      console.log(
+        'R Pole: ',
+        getCard(shootingData.leftPole) +
+          '(' +
+          shootingData.leftPole +
+          ') L Pole: ',
+        getCard(shootingData.rightPole) +
+          '(' +
+          shootingData.rightPole +
+          ') deck: ',
+        shootingData.deck +
+          '(' +
+          shootingData.deck.toString(2) +
+          '), remaining' +
+          shootingData.deck.toString(2).match(/1/g).length +
+          '\n'
+      );
+      await program.methods
+        .draw(new anchor.BN(40))
+        .accounts({
+          player: payer.publicKey,
+          shooting: shootingPDA,
+          safeVault: safeVaultPDA,
+          systemProgram: SystemProgram.programId,
+        })
+        .rpc();
+      shootingData = await program.account.shooting.fetch(shootingPDA);
+      console.log(
+        'Card Draw: ',
+        getCard(shootingData.lastCard) + '(' + shootingData.lastCard + ')\n'
+      );
+      balanceVault = await provider.connection.getBalance(safeVaultPDA);
+      balancePlayer = await provider.connection.getBalance(payer.publicKey);
+      safeVaultData = await program.account.safeVault.fetch(safeVaultPDA);
+      console.log(
+        'Account Balance\tsafevault: ' +
+          balanceVault +
+          '(poll:'+safeVaultData.poolAmount+')\tplayer' +
+          balancePlayer +
+          '\n'
+      );
+    }
   });
 
-  it('Increment Shooting Again', async () => {
-    await program.methods
-      .increment()
-      .accounts({ shooting: shootingKeypair.publicKey })
-      .rpc();
-
-    const currentCount = await program.account.shooting.fetch(
-      shootingKeypair.publicKey
+  it('safe-vault-test', async () => {
+    let shootingData = await program.account.shooting.fetch(shootingPDA);
+    console.log(
+      'R Pole: ',
+      getCard(shootingData.leftPole) +
+        '(' +
+        shootingData.leftPole +
+        ') L Pole: ',
+      getCard(shootingData.rightPole) +
+        '(' +
+        shootingData.rightPole +
+        ') deck: ',
+      shootingData.deck +
+        '(' +
+        shootingData.deck.toString(2) +
+        '), remaining' +
+        shootingData.deck.toString(2).match(/1/g).length +
+        '\n'
     );
-
-    expect(currentCount.count).toEqual(2);
-  });
-
-  it('Decrement Shooting', async () => {
-    await program.methods
-      .decrement()
-      .accounts({ shooting: shootingKeypair.publicKey })
-      .rpc();
-
-    const currentCount = await program.account.shooting.fetch(
-      shootingKeypair.publicKey
+    let balanceVault = await provider.connection.getBalance(safeVaultPDA);
+    let safeVaultData = await program.account.safeVault.fetch(safeVaultPDA);
+    console.log(
+      'Safe-Vault balance: ' +
+        balanceVault +
+        '\tpool: ' +
+        safeVaultData.poolAmount +
+        '\n'
     );
-
-    expect(currentCount.count).toEqual(1);
-  });
-
-  it('Set shooting value', async () => {
     await program.methods
-      .set(42)
-      .accounts({ shooting: shootingKeypair.publicKey })
-      .rpc();
-
-    const currentCount = await program.account.shooting.fetch(
-      shootingKeypair.publicKey
-    );
-
-    expect(currentCount.count).toEqual(42);
-  });
-
-  it('Set close the shooting account', async () => {
-    await program.methods
-      .close()
+      .draw(new anchor.BN(40))
       .accounts({
-        payer: payer.publicKey,
-        shooting: shootingKeypair.publicKey,
+        player: payer.publicKey,
+        shooting: shootingPDA,
+        safeVault: safeVaultPDA,
+        systemProgram: SystemProgram.programId,
       })
       .rpc();
-
-    // The account should no longer exist, returning null.
-    const userAccount = await program.account.shooting.fetchNullable(
-      shootingKeypair.publicKey
+    shootingData = await program.account.shooting.fetch(shootingPDA);
+    console.log(
+      'Card Draw: ',
+      getCard(shootingData.lastCard) + '(' + shootingData.lastCard + ')\n'
     );
-    expect(userAccount).toBeNull();
+    balanceVault = await provider.connection.getBalance(safeVaultPDA);
+    safeVaultData = await program.account.safeVault.fetch(safeVaultPDA);
+    console.log(
+      'Safe-Vault balance: ' +
+        balanceVault +
+        '\tpool: ' +
+        safeVaultData.poolAmount +
+        '\n'
+    );
   });
+
+  function getCard(a: number) {
+    let result: string = '';
+    switch (Math.floor(a / 4)) {
+      case 0: {
+        result = 'A';
+        break;
+      }
+      case 10: {
+        result = 'J';
+        break;
+      }
+      case 11: {
+        result = 'Q';
+        break;
+      }
+      case 12: {
+        result = 'K';
+        break;
+      }
+      default: {
+        result = Math.floor(a / 4 + 1).toString();
+        break;
+      }
+    }
+    switch (a % 4) {
+      case 0: {
+        result += '♠';
+        break;
+      }
+      case 1: {
+        result += '♥';
+        break;
+      }
+      case 2: {
+        result += '♦';
+        break;
+      }
+      case 3: {
+        result += '♣';
+        break;
+      }
+    }
+    return result;
+  }
 });
