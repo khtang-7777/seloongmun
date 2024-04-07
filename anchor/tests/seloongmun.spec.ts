@@ -59,9 +59,9 @@ describe('seloongmun', () => {
     let safeVaultData = await program.account.safeVault.fetch(safeVaultPDA);
     console.log(
       'Account Balance\tsafevault: ' +
-        balanceVault +
+        balanceVault/1000000000 +
         '(poll:'+safeVaultData.poolAmount+')\tplayer' +
-        balancePlayer +
+        balancePlayer/1000000000 +
         '\n'
     );
     let seloongmunData;
@@ -85,7 +85,7 @@ describe('seloongmun', () => {
           '\n'
       );
       await program.methods
-        .draw(new anchor.BN(40))
+        .draw(new anchor.BN(1000000000))
         .accounts({
           player: payer.publicKey,
           seloongmun: seloongmunPDA,
@@ -103,9 +103,9 @@ describe('seloongmun', () => {
       safeVaultData = await program.account.safeVault.fetch(safeVaultPDA);
       console.log(
         'Account Balance\tsafevault: ' +
-          balanceVault +
+          balanceVault/1000000000 +
           '(poll:'+safeVaultData.poolAmount+')\tplayer' +
-          balancePlayer +
+          balancePlayer/1000000000 +
           '\n'
       );
     }
@@ -134,9 +134,9 @@ describe('seloongmun', () => {
     let safeVaultData = await program.account.safeVault.fetch(safeVaultPDA);
     console.log(
       'Safe-Vault balance: ' +
-        balanceVault +
+        balanceVault/1000000 +
         '\tpool: ' +
-        safeVaultData.poolAmount +
+        safeVaultData.poolAmount/1000000 +
         '\n'
     );
     await program.methods

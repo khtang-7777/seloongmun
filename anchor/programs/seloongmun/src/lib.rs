@@ -6,7 +6,7 @@ use std::mem;
 use std::cmp::min;
 
 const NEW_DECK: u64 = 0xFFFFFFFFFFFFF;
-const DEFAULT_NEW_POOL_AMOUNT: u64 = 10000000;
+const DEFAULT_NEW_POOL_AMOUNT: u64 = 2000000000;
 
 declare_id!("7ufZLJwYB2tCgEQjfnGxWhLbRuD6rAU6hvi1XiYw3Wzp");
 
@@ -31,7 +31,7 @@ pub mod seloongmun {
         ctx.accounts.safe_vault.pool_amount = DEFAULT_NEW_POOL_AMOUNT;
         ctx.accounts.safe_vault.reserve_rate = 90;
 
-        system_program::transfer(cpi_context, 30000000)?;
+        system_program::transfer(cpi_context, 6000000000)?;
         Ok(())
     }
 
