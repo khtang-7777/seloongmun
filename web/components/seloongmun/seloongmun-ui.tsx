@@ -7,7 +7,7 @@ import { ExplorerLink } from '../cluster/cluster-ui';
 import {
   useShootingProgram,
   useShootingProgramAccount,
-} from './shooting-data-access';
+} from './seloongmun-data-access';
 
 export function ShootingCreate() {
   const { initialize } = useShootingProgram();

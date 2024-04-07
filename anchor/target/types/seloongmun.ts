@@ -1,6 +1,6 @@
-export type Shooting = {
+export type Seloongmun = {
   "version": "0.1.0",
-  "name": "shooting",
+  "name": "seloongmun",
   "instructions": [
     {
       "name": "initialize",
@@ -11,7 +11,7 @@ export type Shooting = {
           "isSigner": false
         },
         {
-          "name": "shooting",
+          "name": "seloongmun",
           "isMut": true,
           "isSigner": false
         },
@@ -42,7 +42,7 @@ export type Shooting = {
           "isSigner": false
         },
         {
-          "name": "shooting",
+          "name": "seloongmun",
           "isMut": true,
           "isSigner": false
         },
@@ -62,7 +62,7 @@ export type Shooting = {
   ],
   "accounts": [
     {
-      "name": "shooting",
+      "name": "seloongmun",
       "type": {
         "kind": "struct",
         "fields": [
@@ -116,9 +116,9 @@ export type Shooting = {
   ]
 };
 
-export const IDL: Shooting = {
+export const IDL: Seloongmun = {
   "version": "0.1.0",
-  "name": "shooting",
+  "name": "seloongmun",
   "instructions": [
     {
       "name": "initialize",
@@ -129,7 +129,7 @@ export const IDL: Shooting = {
           "isSigner": false
         },
         {
-          "name": "shooting",
+          "name": "seloongmun",
           "isMut": true,
           "isSigner": false
         },
@@ -160,7 +160,7 @@ export const IDL: Shooting = {
           "isSigner": false
         },
         {
-          "name": "shooting",
+          "name": "seloongmun",
           "isMut": true,
           "isSigner": false
         },
@@ -180,7 +180,7 @@ export const IDL: Shooting = {
   ],
   "accounts": [
     {
-      "name": "shooting",
+      "name": "seloongmun",
       "type": {
         "kind": "struct",
         "fields": [

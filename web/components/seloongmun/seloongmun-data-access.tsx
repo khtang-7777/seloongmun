@@ -1,6 +1,6 @@
 'use client';
 
-import { ShootingIDL, getShootingProgramId } from '@shooting/anchor';
+import { ShootingIDL, getShootingProgramId } from '@seloongmun/anchor';
 import { Program } from '@coral-xyz/anchor';
 import { useConnection } from '@solana/wallet-adapter-react';
 import { Cluster, Keypair, PublicKey } from '@solana/web3.js';
@@ -23,8 +23,8 @@ export function useShootingProgram() {
   const program = new Program(ShootingIDL, programId, provider);
 
   const accounts = useQuery({
-    queryKey: ['shooting', 'all', { cluster }],
-    queryFn: () => program.account.shooting.all(),
+    queryKey: ['seloongmun', 'all', { cluster }],
+    queryFn: () => program.account.seloongmun.all(),
   });
 
   const getProgramAccount = useQuery({
@@ -33,11 +33,11 @@ export function useShootingProgram() {
   });
 
   const initialize = useMutation({
-    mutationKey: ['shooting', 'initialize', { cluster }],
+    mutationKey: ['seloongmun', 'initialize', { cluster }],
     mutationFn: (keypair: Keypair) =>
       program.methods
         .initialize()
-        .accounts({ shooting: keypair.publicKey })
+        .accounts({ seloongmun: keypair.publicKey })
         .signers([keypair])
         .rpc(),
     onSuccess: (signature) => {
@@ -62,14 +62,14 @@ export function useShootingProgramAccount({ account }: { account: PublicKey }) {
   const { program, accounts } = useShootingProgram();
 
   const accountQuery = useQuery({
-    queryKey: ['shooting', 'fetch', { cluster, account }],
-    queryFn: () => program.account.shooting.fetch(account),
+    queryKey: ['seloongmun', 'fetch', { cluster, account }],
+    queryFn: () => program.account.seloongmun.fetch(account),
   });
 
   const closeMutation = useMutation({
-    mutationKey: ['shooting', 'close', { cluster, account }],
+    mutationKey: ['seloongmun', 'close', { cluster, account }],
     mutationFn: () =>
-      program.methods.close().accounts({ shooting: account }).rpc(),
+      program.methods.close().accounts({ seloongmun: account }).rpc(),
     onSuccess: (tx) => {
       transactionToast(tx);
       return accounts.refetch();
@@ -77,9 +77,9 @@ export function useShootingProgramAccount({ account }: { account: PublicKey }) {
   });
 
   const decrementMutation = useMutation({
-    mutationKey: ['shooting', 'decrement', { cluster, account }],
+    mutationKey: ['seloongmun', 'decrement', { cluster, account }],
     mutationFn: () =>
-      program.methods.decrement().accounts({ shooting: account }).rpc(),
+      program.methods.decrement().accounts({ seloongmun: account }).rpc(),
     onSuccess: (tx) => {
       transactionToast(tx);
       return accountQuery.refetch();
@@ -87,9 +87,9 @@ export function useShootingProgramAccount({ account }: { account: PublicKey }) {
   });
 
   const incrementMutation = useMutation({
-    mutationKey: ['shooting', 'increment', { cluster, account }],
+    mutationKey: ['seloongmun', 'increment', { cluster, account }],
     mutationFn: () =>
-      program.methods.increment().accounts({ shooting: account }).rpc(),
+      program.methods.increment().accounts({ seloongmun: account }).rpc(),
     onSuccess: (tx) => {
       transactionToast(tx);
       return accountQuery.refetch();
@@ -97,9 +97,9 @@ export function useShootingProgramAccount({ account }: { account: PublicKey }) {
   });
 
   const setMutation = useMutation({
-    mutationKey: ['shooting', 'set', { cluster, account }],
+    mutationKey: ['seloongmun', 'set', { cluster, account }],
     mutationFn: (value: number) =>
-      program.methods.set(value).accounts({ shooting: account }).rpc(),
+      program.methods.set(value).accounts({ seloongmun: account }).rpc(),
     onSuccess: (tx) => {
       transactionToast(tx);
       return accountQuery.refetch();

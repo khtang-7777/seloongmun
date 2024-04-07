@@ -11,16 +11,16 @@ const DEFAULT_NEW_POOL_AMOUNT: u64 = 10000000;
 declare_id!("7ufZLJwYB2tCgEQjfnGxWhLbRuD6rAU6hvi1XiYw3Wzp");
 
 #[program]
-pub mod shooting {
+pub mod seloongmun {
     use super::*;
 
     pub fn initialize(ctx: Context<Initialize>) -> Result<()> {
         let slot1 = Clock::get()?.slot;
         let (left_pole, right_pole, new_mask) = draw_poles(slot1, NEW_DECK);
-        ctx.accounts.shooting.last_card = 0xFF;
-        ctx.accounts.shooting.left_pole = left_pole;
-        ctx.accounts.shooting.right_pole = right_pole;
-        ctx.accounts.shooting.deck = new_mask;
+        ctx.accounts.seloongmun.last_card = 0xFF;
+        ctx.accounts.seloongmun.left_pole = left_pole;
+        ctx.accounts.seloongmun.right_pole = right_pole;
+        ctx.accounts.seloongmun.deck = new_mask;
         let cpi_context = CpiContext::new(
             ctx.accounts.system_program.to_account_info(),
             system_program::Transfer {
@@ -37,17 +37,17 @@ pub mod shooting {
 
     pub fn draw(ctx: Context<Draw>, _amount: u64) -> Result<()> {
         if _amount * 2 >= ctx.accounts.player.to_account_info().get_lamports() {
-            return err!(ShootingError::NotEnoughBet);
+            return err!(SeloongmunError::NotEnoughBet);
         }
         if _amount > ctx.accounts.safe_vault.pool_amount {
-            return err!(ShootingError::NotEnoughFund);
+            return err!(SeloongmunError::NotEnoughFund);
         }
         //Draw a card
         let seed = Clock::get()?.slot;
-        let (card, mut new_mask) = rand_from_mask(seed, ctx.accounts.shooting.deck);
+        let (card, mut new_mask) = rand_from_mask(seed, ctx.accounts.seloongmun.deck);
         //Check condition
-        let left_num = ctx.accounts.shooting.left_pole / 4;
-        let right_num = ctx.accounts.shooting.right_pole / 4;
+        let left_num = ctx.accounts.seloongmun.left_pole / 4;
+        let right_num = ctx.accounts.seloongmun.right_pole / 4;
         let card_num = card / 4;
         if card_num > left_num && card_num < right_num {
             **ctx
@@ -87,10 +87,10 @@ pub mod shooting {
             new_mask
         };
         let (left_pole, right_pole, new_mask) = draw_poles(seed, new_mask);
-        ctx.accounts.shooting.last_card = card;
-        ctx.accounts.shooting.left_pole = left_pole;
-        ctx.accounts.shooting.right_pole = right_pole;
-        ctx.accounts.shooting.deck = new_mask;
+        ctx.accounts.seloongmun.last_card = card;
+        ctx.accounts.seloongmun.left_pole = left_pole;
+        ctx.accounts.seloongmun.right_pole = right_pole;
+        ctx.accounts.seloongmun.deck = new_mask;
         Ok(())
     }
 }
@@ -109,10 +109,10 @@ pub struct Initialize<'info> {
         init_if_needed,
         payer = signer,
         space = 8 + 11,
-        seeds = [b"shooting"],
+        seeds = [b"seloongmun"],
         bump,
     )]
-    pub shooting: Account<'info, Shooting>,
+    pub seloongmun: Account<'info, Seloongmun>,
     #[account(mut)]
     pub signer: Signer<'info>,
     pub system_program: Program<'info, System>,
@@ -130,15 +130,15 @@ pub struct Draw<'info> {
     pub safe_vault: Account<'info, SafeVault>,
     #[account(
         mut,
-        seeds = [b"shooting"],
+        seeds = [b"seloongmun"],
         bump,
     )]
-    pub shooting: Account<'info, Shooting>,
+    pub seloongmun: Account<'info, Seloongmun>,
     pub system_program: Program<'info, System>,
 }
 
 #[account]
-pub struct Shooting {
+pub struct Seloongmun {
     pub last_card: u8,
     pub left_pole: u8,
     pub right_pole: u8,
@@ -152,7 +152,7 @@ pub struct SafeVault {
 }
 
 #[error_code]
-pub enum ShootingError {
+pub enum SeloongmunError {
     #[msg("Your wallet should have at least double than your bet")]
     NotEnoughBet,
     #[msg("You betting more than our pool")]

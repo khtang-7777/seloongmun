@@ -4,8 +4,8 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import { WalletButton } from '../solana/solana-provider';
 import { AppHero, ellipsify } from '../ui/ui-layout';
 import { ExplorerLink } from '../cluster/cluster-ui';
-import { useShootingProgram } from './shooting-data-access';
-import { ShootingCreate, ShootingList } from './shooting-ui';
+import { useShootingProgram } from './seloongmun-data-access';
+import { ShootingCreate, ShootingList } from './seloongmun-ui';
 
 export default function ShootingFeature() {
   const { publicKey } = useWallet();

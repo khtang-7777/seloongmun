@@ -1,25 +1,25 @@
 import * as anchor from '@coral-xyz/anchor';
 import { Program } from '@coral-xyz/anchor';
 import { Keypair } from '@solana/web3.js';
-import { Shooting } from '../target/types/shooting';
+import { Seloongmun } from '../target/types/seloongmun';
 const { SystemProgram } = anchor.web3;
 
-describe('shooting', () => {
+describe('seloongmun', () => {
   // Configure the client to use the local cluster.
   const provider = anchor.AnchorProvider.env();
   anchor.setProvider(provider);
   const payer = provider.wallet as anchor.Wallet;
 
-  const program = anchor.workspace.Shooting as Program<Shooting>;
+  const program = anchor.workspace.Seloongmun as Program<Seloongmun>;
 
-  const shootingKeypair = Keypair.generate();
-  console.log(`shootingKeypair Account: ${shootingKeypair.publicKey}`);
+  const seloongmunKeypair = Keypair.generate();
+  console.log(`seloongmunKeypair Account: ${seloongmunKeypair.publicKey}`);
 
-  const [shootingPDA] = anchor.web3.PublicKey.findProgramAddressSync(
-    [Buffer.from('shooting')],
+  const [seloongmunPDA] = anchor.web3.PublicKey.findProgramAddressSync(
+    [Buffer.from('seloongmun')],
     program.programId
   );
-  console.log(`shootingPDA Account: ${shootingPDA}`);
+  console.log(`seloongmunPDA Account: ${seloongmunPDA}`);
   const [safeVaultPDA] = anchor.web3.PublicKey.findProgramAddressSync(
     [Buffer.from('safevault')],
     program.programId
@@ -32,24 +32,24 @@ describe('shooting', () => {
       .initialize()
       .accounts({
         signer: payer.publicKey,
-        shooting: shootingPDA,
+        seloongmun: seloongmunPDA,
         safeVault: safeVaultPDA,
         systemProgram: SystemProgram.programId,
       })
       .rpc();
-    const shootingData = await program.account.shooting.fetch(shootingPDA);
-    console.log('Last Card Draw: ', shootingData.lastCard + '\n');
+    const seloongmunData = await program.account.seloongmun.fetch(seloongmunPDA);
+    console.log('Last Card Draw: ', seloongmunData.lastCard + '\n');
     console.log(
-      'shootingPDA R Pole: ',
-      getCard(shootingData.leftPole) + '(' + shootingData.leftPole + ')\n'
+      'seloongmunPDA R Pole: ',
+      getCard(seloongmunData.leftPole) + '(' + seloongmunData.leftPole + ')\n'
     );
     console.log(
-      'shootingPDA L Pole: ',
-      getCard(shootingData.rightPole) + '(' + shootingData.rightPole + ')\n'
+      'seloongmunPDA L Pole: ',
+      getCard(seloongmunData.rightPole) + '(' + seloongmunData.rightPole + ')\n'
     );
     console.log(
-      'shootingPDA deck: ',
-      shootingData.deck + '(' + shootingData.deck.toString(2) + ')\n'
+      'seloongmunPDA deck: ',
+      seloongmunData.deck + '(' + seloongmunData.deck.toString(2) + ')\n'
     );
   });
 
@@ -64,39 +64,39 @@ describe('shooting', () => {
         balancePlayer +
         '\n'
     );
-    let shootingData;
+    let seloongmunData;
     for (let i = 0; i < 10; i++) {
-      shootingData = await program.account.shooting.fetch(shootingPDA);
+      seloongmunData = await program.account.seloongmun.fetch(seloongmunPDA);
       console.log(
         'R Pole: ',
-        getCard(shootingData.leftPole) +
+        getCard(seloongmunData.leftPole) +
           '(' +
-          shootingData.leftPole +
+          seloongmunData.leftPole +
           ') L Pole: ',
-        getCard(shootingData.rightPole) +
+        getCard(seloongmunData.rightPole) +
           '(' +
-          shootingData.rightPole +
+          seloongmunData.rightPole +
           ') deck: ',
-        shootingData.deck +
+        seloongmunData.deck +
           '(' +
-          shootingData.deck.toString(2) +
+          seloongmunData.deck.toString(2) +
           '), remaining' +
-          shootingData.deck.toString(2).match(/1/g).length +
+          seloongmunData.deck.toString(2).match(/1/g).length +
           '\n'
       );
       await program.methods
         .draw(new anchor.BN(40))
         .accounts({
           player: payer.publicKey,
-          shooting: shootingPDA,
+          seloongmun: seloongmunPDA,
           safeVault: safeVaultPDA,
           systemProgram: SystemProgram.programId,
         })
         .rpc();
-      shootingData = await program.account.shooting.fetch(shootingPDA);
+      seloongmunData = await program.account.seloongmun.fetch(seloongmunPDA);
       console.log(
         'Card Draw: ',
-        getCard(shootingData.lastCard) + '(' + shootingData.lastCard + ')\n'
+        getCard(seloongmunData.lastCard) + '(' + seloongmunData.lastCard + ')\n'
       );
       balanceVault = await provider.connection.getBalance(safeVaultPDA);
       balancePlayer = await provider.connection.getBalance(payer.publicKey);
@@ -112,22 +112,22 @@ describe('shooting', () => {
   });
 
   it('safe-vault-test', async () => {
-    let shootingData = await program.account.shooting.fetch(shootingPDA);
+    let seloongmunData = await program.account.seloongmun.fetch(seloongmunPDA);
     console.log(
       'R Pole: ',
-      getCard(shootingData.leftPole) +
+      getCard(seloongmunData.leftPole) +
         '(' +
-        shootingData.leftPole +
+        seloongmunData.leftPole +
         ') L Pole: ',
-      getCard(shootingData.rightPole) +
+      getCard(seloongmunData.rightPole) +
         '(' +
-        shootingData.rightPole +
+        seloongmunData.rightPole +
         ') deck: ',
-      shootingData.deck +
+      seloongmunData.deck +
         '(' +
-        shootingData.deck.toString(2) +
+        seloongmunData.deck.toString(2) +
         '), remaining' +
-        shootingData.deck.toString(2).match(/1/g).length +
+        seloongmunData.deck.toString(2).match(/1/g).length +
         '\n'
     );
     let balanceVault = await provider.connection.getBalance(safeVaultPDA);
@@ -143,15 +143,15 @@ describe('shooting', () => {
       .draw(new anchor.BN(40))
       .accounts({
         player: payer.publicKey,
-        shooting: shootingPDA,
+        seloongmun: seloongmunPDA,
         safeVault: safeVaultPDA,
         systemProgram: SystemProgram.programId,
       })
       .rpc();
-    shootingData = await program.account.shooting.fetch(shootingPDA);
+    seloongmunData = await program.account.seloongmun.fetch(seloongmunPDA);
     console.log(
       'Card Draw: ',
-      getCard(shootingData.lastCard) + '(' + shootingData.lastCard + ')\n'
+      getCard(seloongmunData.lastCard) + '(' + seloongmunData.lastCard + ')\n'
     );
     balanceVault = await provider.connection.getBalance(safeVaultPDA);
     safeVaultData = await program.account.safeVault.fetch(safeVaultPDA);

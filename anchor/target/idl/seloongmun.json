@@ -1,6 +1,6 @@
 {
   "version": "0.1.0",
-  "name": "shooting",
+  "name": "seloongmun",
   "instructions": [
     {
       "name": "initialize",
@@ -11,7 +11,7 @@
           "isSigner": false
         },
         {
-          "name": "shooting",
+          "name": "seloongmun",
           "isMut": true,
           "isSigner": false
         },
@@ -42,7 +42,7 @@
           "isSigner": false
         },
         {
-          "name": "shooting",
+          "name": "seloongmun",
           "isMut": true,
           "isSigner": false
         },
@@ -62,7 +62,7 @@
   ],
   "accounts": [
     {
-      "name": "Shooting",
+      "name": "Seloongmun",
       "type": {
         "kind": "struct",
         "fields": [
